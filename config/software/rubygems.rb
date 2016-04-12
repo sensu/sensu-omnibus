@@ -105,6 +105,14 @@ end
 build do
   env = with_standard_compiler_flags(with_embedded_path)
 
+  if solaris?
+    #env['CFLAGS'] = "-L#{install_dir}/embedded/lib -I#{install_dir}/embedded/include"
+    #env['LDFLAGS'] = "-R#{install_dir}/embedded/lib -L#{install_dir}/embedded/lib -I#{install_dir}/embedded/include -static-libgcc"
+    #env['LD_OPTIONS'] << " -L#{install_dir}/embedded/lib -I#{install_dir}/embedded/include"
+    #env['LD_LIBRARY_PATH'] = "#{install_dir}/embedded/lib"
+    env['LD_ALTEXEC'] = "/usr/sfw/bin/gld"
+  end
+
   if version
     ruby "setup.rb --no-ri --no-rdoc", env: env
 

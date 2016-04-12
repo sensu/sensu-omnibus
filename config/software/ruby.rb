@@ -16,38 +16,22 @@
 
 name "ruby"
 
-# This is now the main software project for anything ruby related.
-# Even if you want a pre-built version of ruby from ruby-installer, include
-# this project as a dependency. If the version is set to ruby-windows,
-# it redirects to depend on the ruby-windows project.
+license "BSD-2-Clause"
+license_file "BSDL"
+license_file "COPYING"
+license_file "LEGAL"
 
-if windows?
-  default_version "ruby-windows"
-else
-  # - chef-client cannot use 2.2.x yet due to a bug in IRB that affects chef-shell on linux:
-  #   https://bugs.ruby-lang.org/issues/11869
-  # - the current status of 2.3.x is that it downloads but fails to compile.
-  default_version "2.3.0"
-end
+# - chef-client cannot use 2.2.x yet due to a bug in IRB that affects chef-shell on linux:
+#   https://bugs.ruby-lang.org/issues/11869
+# - the current status of 2.3.x is that it downloads but fails to compile.
+# - verify that all ffi libs are available for your version on all platforms.
+default_version "2.1.8"
 
 fips_enabled = (project.overrides[:fips] && project.overrides[:fips][:enabled]) || false
 
-if windows? && version == "ruby-windows"
-    dependency "ruby-windows"
-    dependency "ruby-windows-devkit"
-    dependency "ruby-windows-devkit-bash"
-    # The custom yakyakyak ruby build comes with openssl and the FIPS module.
-    # Don't clobber it.
-    dependency "openssl-windows" unless fips_enabled
-    dependency "cacerts"
-else
 
-unless windows?
-  dependency "patch" if solaris2?
-  dependency "ncurses"
-  dependency "libedit"
-end
-
+dependency "patch" if solaris_10?
+dependency "ncurses" unless windows? || version.satisfies?(">= 2.1")
 dependency "zlib"
 dependency "openssl"
 dependency "libffi"
@@ -88,7 +72,7 @@ source url: "https://cache.ruby-lang.org/pub/ruby/#{version.match(/^(\d+\.\d+)/)
 
 relative_path "ruby-#{version}"
 
-env = with_standard_compiler_flags(with_embedded_path, bfd_flags: true)
+env = with_standard_compiler_flags(with_embedded_path({}, msys: true), bfd_flags: true)
 
 if mac_os_x?
   # -Qunused-arguments suppresses "argument unused during compilation"
@@ -118,9 +102,7 @@ elsif aix?
   env['SOLIBS'] = "-lm -lc"
   # need to use GNU m4, default m4 doesn't work
   env['M4'] = "/opt/freeware/bin/m4"
-  #env['MAKE'] = "make"
-  #env['LDFLAGS'] ="-L/#{install_dir}/embedded/lib"
-elsif solaris2?
+elsif solaris_10?
   if sparc?
     # Known issue with rubby where too much GCC optimization blows up miniruby on sparc
     env['CFLAGS'] << " -std=c99 -O0 -g -pipe -mcpu=v9"
@@ -128,15 +110,17 @@ elsif solaris2?
   else
     env['CFLAGS'] << " -std=c99 -O3 -g -pipe"
   end
+elsif solaris_11?
+  env['CFLAGS'] << " -std=c99 -O3 -g -pipe"
 elsif windows?
   env['CPPFLAGS'] << " -DFD_SETSIZE=2048"
 else  # including linux
-  #if version.satisfies?(">= 2.3.0") &&
-  #  rhel? && platform_version.satisfies?("< 6.0")
-  #  env['CFLAGS'] << " -O2 -g -pipe"
-  #else
+  if version.satisfies?(">= 2.3.0") &&
+    rhel? && platform_version.satisfies?("< 6.0")
+    env['CFLAGS'] << " -O2 -g -pipe"
+  else
     env['CFLAGS'] << " -O3 -g -pipe"
-  #end
+  end
 end
 
 build do
@@ -144,21 +128,18 @@ build do
   patch_env = env.dup
   patch_env['PATH'] = "/opt/freeware/bin:#{env['PATH']}" if aix?
 
-  if solaris2?# && version.satisfies?('>= 2.1')
+  if solaris_10? && version.satisfies?('>= 2.1')
     patch source: "ruby-no-stack-protector.patch", plevel: 1, env: patch_env
-    if platform_version.satisfies?('>= 5.11')
-      patch source: "ruby-solaris-linux-socket-compat.patch", plevel: 1, env: patch_env
-    end
-  elsif solaris2?# && version =~ /^1.9/
+  elsif solaris_10? && version =~ /^1.9/
     patch source: "ruby-sparc-1.9.3-c99.patch", plevel: 1, env: patch_env
   end
 
   # wrlinux7/ios_xr build boxes from Cisco include libssp and there is no way to
   # disable ruby from linking against it, but Cisco switches will not have the
   # library.  Disabling it as we do for Solaris.
-  #if ios_xr? && version.satisfies?('>= 2.1')
-  #  patch source: "ruby-no-stack-protector.patch", plevel: 1, env: patch_env
-  #end
+  if ios_xr? && version.satisfies?('>= 2.1')
+    patch source: "ruby-no-stack-protector.patch", plevel: 1, env: patch_env
+  end
 
   # disable libpath in mkmf across all platforms, it trolls omnibus and
   # breaks the postgresql cookbook.  i'm not sure why ruby authors decided
@@ -167,11 +148,11 @@ build do
   # other platforms.  generally you need to have a condition where the
   # embedded and non-embedded libs get into a fight (libiconv, openssl, etc)
   # and ruby trying to set LD_LIBRARY_PATH itself gets it wrong.
-  #if version.satisfies?('>= 2.1')
+  if version.satisfies?('>= 2.1')
     patch source: "ruby-2_1_3-no-mkmf.patch", plevel: 1, env: patch_env
     # should intentionally break and fail to apply on 2.2, patch will need to
     # be fixed.
-  #end
+  end
 
   # Patch Makefile.in to allow RCFLAGS environment variable to be accepted
   # when invoking WINDRES.
@@ -182,23 +163,22 @@ build do
   # in Ruby trunk and expected to be included in future point releases.
   # https://redmine.ruby-lang.org/issues/11602
   if rhel? &&
-     #platform_version.satisfies?('< 6') &&
+     platform_version.satisfies?('< 6') &&
      (version == '2.1.7' || version == '2.2.3')
 
      patch source: 'ruby-fix-reserve-stack-segfault.patch', plevel: 1, env: patch_env
   end
 
-  configure_command = ["./configure",
-                       "--with-out-ext=dbm",
+  configure_command = ["--with-out-ext=dbm,readline",
                        "--enable-shared",
                        "--disable-install-doc",
                        "--without-gmp",
                        "--without-gdbm",
-                       "--disable-dtrace",
-                       "--prefix=#{install_dir}/embedded",]
-#  configure_command << "--with-ext=psych" #if version.satisfies?('< 2.3')
-  configure_command << "--enable-libedit" unless windows?
+                       "--without-tk",
+                       "--disable-dtrace"]
+  configure_command << "--with-ext=psych" if version.satisfies?('< 2.3')
   configure_command << "--with-bundled-md5" if fips_enabled
+  configure_command << "--enable-rpath" if solaris_11?
 
   if aix?
     # need to patch ruby's configure file so it knows how to find shared libraries
@@ -210,8 +190,6 @@ build do
     # the next two patches are because xlc doesn't deal with long vs int types well
     patch source: "ruby-aix-atomic.patch", plevel: 1, env: patch_env
     patch source: "ruby-aix-vm-core.patch", plevel: 1, env: patch_env
-    # AIX libraries already define _ALL_SOURCES, need to #undef
-    patch source: "ruby-aix-configure-all-source.patch", plevel: 1, env: patch_env
 
     # per IBM, just help ruby along on what it's running on
     configure_command << "--host=powerpc-ibm-aix6.1.0.0 --target=powerpc-ibm-aix6.1.0.0 --build=powerpc-ibm-aix6.1.0.0 --enable-pthread"
@@ -247,20 +225,14 @@ build do
   # The alternative would be to patch configure to remove all the pkg-config garbage entirely
   env.merge!("PKG_CONFIG" => "/bin/true") if aix?
 
-  #configure(*configure_command, env: env)
-  #if windows?
+  configure(*configure_command, env: env)
+  if windows?
     # On windows, msys make 3.81 breaks with parallel builds.
-  #  make env: env
-  #  make "install", env: env
-  #else
-  #  make "-j #{workers}", env: env
-  #  make "-j #{workers} install", env: env
-  #end
-
-  command configure_command.join(" "), env: env
-  make "-j #{workers}", env: env
-  make "-j #{workers} install", env: env
+    make env: env
+    make "install", env: env
+  else
+    make "-j #{workers}", env: env
+    make "-j #{workers} install", env: env
+  end
 
 end
-
-end # if windows? && version == 'ruby-windows'

@@ -26,6 +26,9 @@ end
 
 source url: "http://iweb.dl.sourceforge.net/project/libpng/zlib/#{version}/zlib-#{version}.tar.gz"
 
+license "Zlib"
+license_file "README"
+
 relative_path "zlib-#{version}"
 
 build do
@@ -61,16 +64,16 @@ build do
     # configure script cannot handle.
     # TODO: Do other OSes need this?  Is this strictly a mac thing?
     env = with_standard_compiler_flags
-    if solaris?
+    if solaris_10?
       # For some reason zlib needs this flag on solaris (cargocult warning?)
-      env['CFLAGS'] << " -DNO_VIZ" if solaris2?
+      env['CFLAGS'] << " -DNO_VIZ"
     elsif freebsd?
       # FreeBSD 10+ gets cranky if zlib is not compiled in a
       # position-independent way.
       env['CFLAGS'] << " -fPIC"
     end
 
-    command "./configure --prefix=#{install_dir}/embedded", env: env
+    configure env: env
 
     make "-j #{workers}", env: env
     make "-j #{workers} install", env: env

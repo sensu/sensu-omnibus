@@ -29,6 +29,8 @@ build do
     patch source: "v0.1.6.ppc64le-configure.patch", plevel: 1, env: env
   end
 
+  env['LDFLAGS'] << " -static-libgcc"
+
   command "./configure --prefix=#{install_dir}/embedded --enable-shared", env: env
 
   # Windows had worse automake/libtool version issues.

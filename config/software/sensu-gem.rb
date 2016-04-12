@@ -1,5 +1,5 @@
 name "sensu-gem"
-default_version "0.22.2"
+default_version "0.23.0"
 
 dependency "ruby"
 dependency "rubygems"
@@ -10,6 +10,8 @@ build do
   env = with_standard_compiler_flags(with_embedded_path)
 
   env['CC'] = 'gcc'
+  env['CXX'] = "g++ -m64"
+  env['cppflags'] = "-std=c99"
 
   files_dir = "#{project.files_path}/#{name}"
 
