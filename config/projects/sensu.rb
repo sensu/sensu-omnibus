@@ -38,7 +38,7 @@ override "rubygems", version: "2.5.2"
 dependency "preparation"
 
 # sensu dependencies/components
-#dependency "sensu-gem"
+dependency "sensu-gem"
 
 # Version manifest file
 dependency "version-manifest"
