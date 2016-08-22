@@ -18,6 +18,9 @@ name "libffi"
 
 default_version "3.2.1"
 
+license "MIT"
+license_file "LICENSE"
+
 # Is libtool actually necessary? Doesn't configure generate one?
 dependency "libtool" unless windows?
 
@@ -31,12 +34,9 @@ relative_path "libffi-#{version}"
 build do
   env = with_standard_compiler_flags(with_embedded_path)
 
-  env['INSTALL'] = "/opt/freeware/bin/install" if aix?
+  env["INSTALL"] = "/opt/freeware/bin/install" if aix?
 
-  configure_command = [
-    "./configure",
-    "--prefix=#{install_dir}/embedded",
-  ]
+  configure_command = []
 
   # AIX's old version of patch doesn't like the patch here
   unless aix?
@@ -48,16 +48,12 @@ build do
     end
   end
 
-  command configure_command.join(" "), env: env
+  configure(*configure_command, env: env)
 
-  if solaris2?
+  if solaris_10?
     # run old make :(
     make env: env, bin: "/usr/ccs/bin/make"
     make "install", env: env, bin: "/usr/ccs/bin/make"
-  elsif windows? || aix?
-    # On windows, msys make 3.81 breaks with parallel builds.
-    make env: env
-    make "install", env: env
   else
     make "-j #{workers}", env: env
     make "-j #{workers} install", env: env

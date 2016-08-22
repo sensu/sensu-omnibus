@@ -431,6 +431,36 @@ website and click `Save image`.
   git config --global user.name "Justin Kolberg"
   ```
 
+### Windows (x86/x86_64)
+
+1. Install Ruby (latest 2.2.x as 2.3+ has a bug).
+
+2. Install msys2 (choose arch that matches the package being built).
+
+3. Install mingw (choose arch that matches the package being built).
+
+4. Set PATH. Append:
+
+  ```
+  C:\msys2\mingw64\bin;C:\msys2\usr\bin;C:\Ruby22-x64\bin
+  ```
+
+5. Install git
+
+6. Install gcc
+
+  32-bit:
+
+  ```
+  pacman -S mingw-w64-i686-gcc
+  ```
+
+  64-bit:
+
+  ```
+  pacman -S mingw-w64-x86_64-gcc
+  ```
+
 Installation
 ------------
 You must have a sane Ruby 1.9+ environment with Bundler installed. Ensure all

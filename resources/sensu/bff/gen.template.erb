@@ -1,0 +1,23 @@
+Package Name: <%= name %>
+Package VRMF: <%= version %>
+Update: N
+Fileset
+  Fileset Name: <%= name %>
+  Fileset VRMF: <%= version %>
+  Fileset Description: <%= description %>
+  USRLIBLPPFiles
+  <% scripts.each do |name, install_path| -%>
+    <%= name %>: <%= install_path %>
+  <% end -%>
+  EOUSRLIBLPPFiles
+  Bosboot required: N
+  License agreement acceptance required: N
+  Include license files in this package: N
+  Requisites:
+  ROOT Part: Y
+  USRFiles
+<% files.each do |file| -%>
+    <%= file %>
+<% end -%>
+  EOUSRFiles
+EOFileset

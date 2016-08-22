@@ -55,7 +55,9 @@ build do
   copy("#{files_dir}/sensu-client.xml", "#{share_dir}/lib/svc/manifest/site")
 
   # make symlinks
-  link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
-  link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
-  link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  unless windows?
+    link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
+    link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
+    link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  end
 end

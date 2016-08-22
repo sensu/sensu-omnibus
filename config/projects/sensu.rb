@@ -22,6 +22,10 @@ homepage "https://sensuapp.org"
 # and /opt/sensu on all other platforms
 install_dir "#{default_root}/#{name}"
 
+package :msi do
+  upgrade_code "29B5AA66-46B3-4676-8D67-2F3FB31CC549"
+end
+
 version = ENV["SENSU_VERSION"]
 build_version version
 build_iteration ENV["BUILD_NUMBER"]
@@ -34,7 +38,7 @@ override "rubygems", version: "2.5.2"
 dependency "preparation"
 
 # sensu dependencies/components
-dependency "sensu-gem"
+#dependency "sensu-gem"
 
 # Version manifest file
 dependency "version-manifest"
