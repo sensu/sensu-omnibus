@@ -18,9 +18,13 @@ name "sensu"
 maintainer "justin@heavywater.io"
 homepage "https://sensuapp.org"
 
-# Defaults to C:/sensu on Windows
+# Defaults to C:/opt/sensu on Windows
 # and /opt/sensu on all other platforms
-install_dir "#{default_root}/#{name}"
+if windows?
+  install_dir "#{default_root}/opt/#{name}"
+else
+  install_dir "#{default_root}/#{name}"
+end
 
 package :msi do
   upgrade_code "29B5AA66-46B3-4676-8D67-2F3FB31CC549"
