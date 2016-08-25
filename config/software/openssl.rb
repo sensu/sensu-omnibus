@@ -97,7 +97,6 @@ build do
       "/bin/bash ./Configure solaris64-x86_64-gcc -static-libgcc"
     elsif windows?
       platform = windows_arch_i386? ? "mingw" : "mingw64"
-      puts "PLATFORM!!!!! #{platform}"
       "perl.exe ./Configure #{platform}"
     else
       prefix =

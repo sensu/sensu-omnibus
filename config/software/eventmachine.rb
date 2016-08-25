@@ -1,9 +1,7 @@
 name "eventmachine"
 
 dependency "ruby"
-
 dependency "ruby-windows-devkit" if windows?
-dependency "ruby-windows-devkit-bash" if windows?
 
 source git: "https://github.com/portertech/eventmachine.git"
 

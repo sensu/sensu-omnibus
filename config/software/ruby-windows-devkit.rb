@@ -39,7 +39,7 @@ end
 build do
   env = with_standard_compiler_flags(with_embedded_path)
 
-  embedded_dir = "#{install_dir}/embedded".sub(/^([A-Za-z]:)/, "/c").gsub(/\\/, "/")
+  embedded_dir = "#{install_dir}/embedded"
 
   command "#{project_file} -y -o#{windows_safe_path(embedded_dir)}", env: env
 
@@ -62,6 +62,6 @@ build do
     "libbz2-2.dll"     => "libbz2-2.dll",
     "libz-1.dll"       => "libz-1.dll",
   }.each do |target, to|
-    copy "#{install_dir}/embedded/mingw/bin/#{to}", "#{install_dir}/bin/#{target}"
+    copy "#{install_dir}/embedded/mingw/bin/#{to}", "#{embedded_dir}/bin/#{target}"
   end
 end
