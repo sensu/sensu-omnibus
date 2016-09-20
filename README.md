@@ -431,6 +431,47 @@ website and click `Save image`.
   git config --global user.name "Justin Kolberg"
   ```
 
+### Windows (x86/x86_64)
+
+1. Install Visual Studio 2013 with Update 4.
+
+2. Install the latest WiX Toolset (v3.10 as of the time this was written).
+
+3. Install Ruby (latest 2.2.x as 2.3+ has a bug).
+
+4. Install the Ruby devkit for 1.9 and up.
+
+5. Install msys2 (choose arch that matches the package being built) to `c:\msys2`.
+
+6. Install mingw (choose arch that matches the package being built) using `pacman`.
+
+7. Set PATH in `~/.bash_profile` (replace arch specific paths):
+
+  ```
+  export PATH="/c/Ruby21/bin:/mingw32/i686-w64-mingw32/bin:/c/msys2/mingw32/bin:/c/Ruby21/bin:/mingw32/i686-w64-mingw32/bin:/c/msys2/mingw32/bin:/mingw32/bin:/usr/local/bin:/usr/bin:/bin:/c/Windows/System32:/c/Windows:/c/Windows/System32/Wbem:/c/Windows/System32/WindowsPowerShell/v1.0/:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/c/Program Files (x86)/WiX Toolset v3.10/bin:/c/Program Files (x86)/WiX Toolset v3.10/bin:/c/Program Files (x86)/Windows Kits/8.1/bin/x64/"
+  ``` 
+
+5. Install git:
+
+  ```
+  pacman -S git
+  ```
+
+
+6. Install gcc:
+
+  32-bit:
+
+  ```
+  pacman -S mingw-w64-i686-gcc
+  ```
+
+  64-bit:
+
+  ```
+  pacman -S mingw-w64-x86_64-gcc
+  ```
+
 Installation
 ------------
 You must have a sane Ruby 1.9+ environment with Bundler installed. Ensure all

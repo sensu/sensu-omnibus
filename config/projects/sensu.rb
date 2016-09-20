@@ -14,17 +14,26 @@ unless ENV.key?("BUILD_NUMBER")
   exit 2
 end
 
-name "sensu"
-maintainer "justin@heavywater.io"
-homepage "https://sensuapp.org"
-
-# Defaults to C:/sensu on Windows
-# and /opt/sensu on all other platforms
-install_dir "#{default_root}/#{name}"
-
 version = ENV["SENSU_VERSION"]
+build_number = ENV["BUILD_NUMBER"]
+
+name "sensu"
+maintainer "Heavy Water Operations, LLC."
+homepage "https://www.sensuapp.org"
 build_version version
-build_iteration ENV["BUILD_NUMBER"]
+build_iteration build_number
+
+# Defaults to C:/opt/sensu on Windows
+# and /opt/sensu on all other platforms
+if windows?
+  install_dir "#{default_root}/opt/#{name}"
+else
+  install_dir "#{default_root}/#{name}"
+end
+
+package :msi do
+  upgrade_code "29B5AA66-46B3-4676-8D67-2F3FB31CC549"
+end
 
 override "sensu-gem", version: version
 override "ruby", version: "2.3.0"

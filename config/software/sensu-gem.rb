@@ -30,9 +30,16 @@ build do
       " --version '1.4.2'" \
       " --no-ri --no-rdoc", env: env
 
-  share_dir = File.join(install_dir, "embedded", "share", "sensu")
+  embedded_dir = File.join(install_dir, "embedded")
+  share_dir = File.join(embedded_dir, "share", "sensu")
   bin_dir = File.join(install_dir, "bin")
-  embedded_bin_dir = File.join(install_dir, "embedded", "bin")
+  embedded_bin_dir = File.join(embedded_dir, "bin")
+  gems_dir = File.join(embedded_dir, "lib", "ruby", "gems", "*", "gems")
+
+  # delete spec directory from all sensu gems because they sometimes
+  # contain symlinks which break windows and shouldn't be bundled
+  # anyways
+  command "rm -rf #{gems_dir}/sensu*/spec"
 
   # make directories
   mkdir("#{install_dir}/bin")
@@ -55,7 +62,11 @@ build do
   copy("#{files_dir}/sensu-client.xml", "#{share_dir}/lib/svc/manifest/site")
 
   # make symlinks
-  link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
-  link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
-  link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  if windows?
+    # TODO: add service xml file(s)
+  else
+    link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
+    link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
+    link("#{embedded_bin_dir}/sensu-api", "#{bin_dir}/sensu-api")
+  end
 end

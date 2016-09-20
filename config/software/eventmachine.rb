@@ -1,13 +1,14 @@
 name "eventmachine"
 
 dependency "ruby"
+dependency "ruby-windows-devkit" if windows?
 
 source git: "https://github.com/portertech/eventmachine.git"
 
-default_version "feature/pure_ruby_tls"
+default_version "master"
 
-version "feature/pure_ruby_tls" do
-  source git: "https://github.com/portertech/eventmachine.git"
+version "master" do
+  source git: "https://github.com/eventmachine/eventmachine.git"
 end
 
 build do
