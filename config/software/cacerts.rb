@@ -43,7 +43,9 @@ build do
   copy "#{project_dir}/ca-bundle.crt", "#{install_dir}/embedded/ssl/certs/cacert.pem"
 
   # Windows does not support symlinks
-  unless windows?
+  if windows?
+    copy "#{project_dir}/ca-bundle.crt", "#{install_dir}/embedded/ssl/cert.pem"
+  else
     link "#{install_dir}/embedded/ssl/certs/cacert.pem", "#{install_dir}/embedded/ssl/cert.pem"
 
     block { File.chmod(0644, "#{install_dir}/embedded/ssl/certs/cacert.pem") }
