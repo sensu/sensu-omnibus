@@ -57,8 +57,12 @@ build do
   copy("#{files_dir}/config.json.example", "#{share_dir}/etc/sensu")
 
   # sensu-install
-  copy("#{files_dir}/sensu-install", bin_dir)
-  command("chmod +x #{bin_dir}/sensu-install")
+  if windows?
+    copy("#{files_dir}/sensu-install.bat", bin_dir)
+  else
+    copy("#{files_dir}/sensu-install", bin_dir)
+    command("chmod +x #{bin_dir}/sensu-install")
+  end
 
   # sensu rc script
   copy("#{files_dir}/sensu-client", "#{share_dir}/etc/rc.d")
