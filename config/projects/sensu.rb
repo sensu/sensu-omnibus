@@ -14,13 +14,14 @@ unless ENV.key?("BUILD_NUMBER")
   exit 2
 end
 
-version = ENV["SENSU_VERSION"]
+sensu_version = ENV["SENSU_VERSION"]
+build_version = ENV.fetch("BUILD_VERSION", sensu_version)
 build_number = ENV["BUILD_NUMBER"]
 
 name "sensu"
 maintainer "Heavy Water Operations, LLC."
 homepage "https://www.sensuapp.org"
-build_version version
+build_version build_version
 build_iteration build_number
 
 # Defaults to C:/opt/sensu on Windows
@@ -35,7 +36,7 @@ package :msi do
   upgrade_code "29B5AA66-46B3-4676-8D67-2F3FB31CC549"
 end
 
-override "sensu-gem", version: version
+override "sensu-gem", version: sensu_version
 override "ruby", version: "2.3.0"
 override "rubygems", version: "2.5.2"
 

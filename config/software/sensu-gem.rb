@@ -1,10 +1,17 @@
 name "sensu-gem"
 default_version "0.23.1"
 
+source git: "https://github.com/sensu/sensu.git"
+
+version "release/0.27" do
+  source git: "https://github.com/sensu/sensu.git"
+end
+
 dependency "ruby"
 dependency "rubygems"
 dependency "libffi"
 dependency "eventmachine"
+dependency "winsw" if windows?
 
 build do
   env = with_standard_compiler_flags(with_embedded_path)
@@ -17,10 +24,14 @@ build do
 
   files_dir = "#{project.files_path}/#{name}"
 
-  gem "install sensu" \
-      " --version '#{version}'" \
-      " --bindir '#{install_dir}/embedded/bin'" \
-      " --no-ri --no-rdoc", env: env
+  command("gem build sensu.gemspec")
+
+  gem("install sensu-0.26.1.gem --bindir '#{install_dir}/embedded/bin' --no-ri --no-rdoc", env: env)
+
+  #gem "install sensu" \
+  #    " --version '#{version}'" \
+  #    " --bindir '#{install_dir}/embedded/bin'" \
+  #    " --no-ri --no-rdoc", env: env
 
   gem "install sensu-plugin" \
       " --version '1.2.0'" \
@@ -35,11 +46,6 @@ build do
   bin_dir = File.join(install_dir, "bin")
   embedded_bin_dir = File.join(embedded_dir, "bin")
   gems_dir = File.join(embedded_dir, "lib", "ruby", "gems", "*", "gems")
-
-  # delete spec directory from all sensu gems because they sometimes
-  # contain symlinks which break windows and shouldn't be bundled
-  # anyways
-  command "rm -rf #{gems_dir}/sensu*/spec"
 
   # make directories
   mkdir("#{install_dir}/bin")
@@ -63,7 +69,9 @@ build do
 
   # make symlinks
   if windows?
-    # TODO: add service xml file(s)
+    copy("#{files_dir}/sensu-client-windows.xml", "#{bin_dir}/sensu-client.xml")
+    copy("#{files_dir}/sensu-client.exe.config", "#{bin_dir}/sensu-client.exe.config")
+    move("#{bin_dir}/winsw.exe", "#{bin_dir}/sensu-client.exe")
   else
     link("#{embedded_bin_dir}/sensu-client", "#{bin_dir}/sensu-client")
     link("#{embedded_bin_dir}/sensu-server", "#{bin_dir}/sensu-server")
