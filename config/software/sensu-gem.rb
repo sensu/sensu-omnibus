@@ -52,9 +52,10 @@ build do
   mkdir("#{share_dir}/etc/sensu")
   mkdir("#{share_dir}/etc/rc.d")
   mkdir("#{share_dir}/lib/svc/manifest/site")
+  mkdir("#{install_dir}/conf.d") if windows?
 
   # config.json.example
-  copy("#{files_dir}/config.json.example", "#{share_dir}/etc/sensu")
+  copy("#{files_dir}/config.json.example", install_dir)
 
   # sensu-install
   if windows?

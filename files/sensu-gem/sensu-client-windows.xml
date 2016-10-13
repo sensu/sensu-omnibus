@@ -6,6 +6,8 @@
   <name>Sensu Client</name>
   <description>This service runs a Sensu client</description>
   <executable>C:\opt\sensu\embedded\bin\ruby</executable>
-  <arguments>C:\opt\sensu\embedded\bin\sensu-client -l
-  C:\opt\sensu\sensu-client.log</arguments>
+  <arguments>C:\opt\sensu\embedded\bin\sensu-client
+  -l C:\opt\sensu\sensu-client.log
+  -c C:\opt\sensu\config.json
+  -d C:\opt\sensu\conf.d</arguments>
 </service>
