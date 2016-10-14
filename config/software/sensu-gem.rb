@@ -26,7 +26,7 @@ build do
 
   command("gem build sensu.gemspec")
 
-  gem("install sensu-0.26.1.gem --bindir '#{install_dir}/embedded/bin' --no-ri --no-rdoc", env: env)
+  gem("install sensu-0.26.5.gem --bindir '#{install_dir}/embedded/bin' --no-ri --no-rdoc", env: env)
 
   #gem "install sensu" \
   #    " --version '#{version}'" \

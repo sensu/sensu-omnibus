@@ -77,11 +77,21 @@
       </Directory>
     </Directory>
 
+    <DirectoryRef Id="PROJECTLOCATION">
+      <Component Id="SensuPath"
+                 Guid="{60098D5D-BBA4-41C6-8F6F-DA600AB4834B}" >
+        <Environment Id="Environment" Name="PATH" Action="set"
+                     Part="last" System="yes"
+                     Value="[PROJECTLOCATION]bin;[PROJECTLOCATION]embedded\bin" />
+      </Component>
+    </DirectoryRef>
+
     <SetDirectory Id="WINDOWSVOLUME" Value="[WindowsVolume]" />
 
     <!-- Set the components defined in our fragment files that will be used for our feature  -->
     <Feature Id="ProjectFeature" Title="!(loc.FeatureMainName)" Absent="disallow" AllowAdvertise="no" Level="1" ConfigurableDirectory="<%= wix_install_dir %>">
       <ComponentGroupRef Id="ProjectDir" />
+      <ComponentRef Id="SensuPath" />
     </Feature>
 
     <!-- UI Stuff -->
