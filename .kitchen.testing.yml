@@ -1,0 +1,72 @@
+<%
+build_version = ENV["SENSU_VERSION"]
+build_iteration = ENV["BUILD_NUMBER"]
+
+unless build_version && build_iteration
+  raise "SENSU_VERSION and BUILD_NUMBER must be set"
+end
+%>
+
+driver:
+  name: vagrant
+  forward_agent: yes
+  customize:
+    cpus: 2
+    memory: 2048
+  synced_folders:
+    - ['.', '/home/vagrant/sensu', 'type: :rsync']
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 12.13.37
+
+platforms:
+  - name: centos-7.1
+    run_list: yum-epel::default
+  - name: centos-6.6
+    run_list: yum-epel::default
+  - name: centos-5.11
+    run_list: yum-epel::default
+  - name: centos-5.11-i386
+    run_list: yum-epel::default
+  - name: debian-7.8
+    run_list: apt::default
+  - name: debian-7.8-i386
+    run_list: apt::default
+  - name: debian-6.0.10
+    run_list: apt::default
+  - name: freebsd-11.0
+    driver:
+      box: sensu/freebsd-11.0
+    run_list:
+      - omnibus_sensu::freebsd_portsnap
+      - freebsd::pkgng
+  - name: freebsd-10.3
+    run_list:
+      - omnibus_sensu::freebsd_portsnap
+      - freebsd::pkgng
+  - name: freebsd-9.3
+    run_list:
+      - freebsd::portsnap
+      - freebsd::pkgng
+  - name: ubuntu-16.04
+    run_list: apt::default
+  - name: ubuntu-14.04
+    run_list: apt::default
+  - name: ubuntu-12.04
+    run_list: apt::default
+  - name: ubuntu-12.04-i386
+    run_list: apt::default
+
+suites:
+  - name: default
+    run_list:
+    - omnibus_sensu::default
+    attributes:
+      omnibus:
+        build_user:          vagrant
+        build_user_group:    vagrant
+        build_user_password: vagrant
+      omnibus_sensu:
+        build_version: "<%= build_version %>"
+        build_iteration: "<%= build_iteration %>"
