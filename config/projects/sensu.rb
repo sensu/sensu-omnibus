@@ -71,6 +71,13 @@ package :msi do
   wix_light_extension "WixNetFxExtension"
 end
 
+proj_to_work_around_cleanroom = self
+package :pkg do
+  identifier "io.sensu.pkg.#{proj_to_work_around_cleanroom.name}"
+  #signing_identity "Developer ID Installer: Sensu, Inc. (IDHERE)"
+end
+compress :dmg
+
 # TODO: config files are removed during actions such as dpkg --purge
 #if linux?
 #  config_file "/etc/sensu/config.json.example"
