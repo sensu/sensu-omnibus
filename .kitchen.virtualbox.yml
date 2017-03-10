@@ -1,0 +1,25 @@
+driver:
+  name: vagrant
+  provider: virtualbox
+  synced_folders:
+    - ['.', '/Users/vagrant/sensu', 'disabled: true']
+  customize:
+    memory: 2048
+    cpus: 2
+
+provisioner:
+  require_chef_omnibus: true
+
+platforms:
+  - name: macos-10.9
+    driver:
+      box: sensu/macos-10.9
+  - name: macos-10.10
+    driver:
+      box: sensu/macos-10.10
+  - name: macos-10.11
+    driver:
+      box: sensu/macos-10.11
+  - name: macos-10.12
+    driver:
+      box: sensu/macos-10.12

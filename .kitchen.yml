@@ -154,6 +154,7 @@ platforms:
 suites:
   - name: default
     run_list:
+    - build-essential::default
     - omnibus_sensu::default
     attributes:
       omnibus_sensu:
