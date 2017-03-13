@@ -32,6 +32,10 @@ platform and architecture combinations:
 | FreeBSD 10         | ✅     | ❌     | Official 32bit images are out of date |
 | FreeBSD 11         | ✅     | ❌     | No official 32bit images |
 | Windows 2012r2     | ✅     | ❌     |                          |
+| Mac OS X 10.9      | ✅     | ❌     | See [Mac platform notes](platform-docs/MAC_OS_X.md) for instructions |
+| Mac OS X 10.10     | ✅     | ❌     | See [Mac platform notes](platform-docs/MAC_OS_X.md) for instructions |
+| Mac OS X 10.11     | ✅     | ❌     | See [Mac platform notes](platform-docs/MAC_OS_X.md) for instructions |
+| macOS 10.12        | ✅     | ❌     | See [Mac platform notes](platform-docs/MAC_OS_X.md) for instructions |
 
 ### Packages Built By Hand
 
@@ -41,8 +45,6 @@ add these builds to the automation pipeline in the future.
 | Platform & Version | Architecture | Comments                                                        |
 |--------------------|--------------|-----------------------------------------------------------------|
 | AIX                | PowerPC      | See [AIX platform notes](platform-docs/AIX.md) for instructions |
-| macOS 10.8         | x86_64       | Built with homebrew-sensu, not yet using omnibus                |
-| macOS 10.9+        | x86_64       | Built with homebrew-sensu, not yet using omnibus                |
 | Solaris 10         | i386         | See [Solaris 10](platform-docs/SOLARIS_10.md) for instructions  |
 | Solaris 11         | i386         | Documentation needed                                            |
 
