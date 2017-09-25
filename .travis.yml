@@ -15,6 +15,7 @@ branches:
   - "/^v\\d.*\\.\\d.*\\.\\d.*-.*\\d$/"
 env:
   matrix:
+  - BUILD_PLATFORM=debian-9
   - BUILD_PLATFORM=debian-8
   - BUILD_PLATFORM=centos-7
   - BUILD_PLATFORM=ubuntu-1604

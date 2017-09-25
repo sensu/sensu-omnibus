@@ -86,6 +86,13 @@ platforms:
       image_id: ami-e68b1d86
       instance_type: m1.medium
     run_list: yum-epel::default
+  - name: debian-9
+    run_list: apt::default
+    driver:
+      block_device_mappings:
+        - device_name: /dev/xvda
+          ebs:
+            delete_on_termination: true
   - name: debian-8
     run_list: apt::default
     driver:

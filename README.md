@@ -26,6 +26,7 @@ platform and architecture combinations:
 | Ubuntu 16.04       | ✅     | ❌     | No official 32bit images |
 | Debian 7           | ✅     | ✅     |                          |
 | Debian 8           | ✅     | ❌     | No official 32bit images |
+| Debian 9           | ✅     | ❌     | No official 32bit images |
 | CentOS 5           | ✅     | ✅     | 32 and 64bit images built with [sensu-omnibus-packer](https://github.com/sensu/sensu-omnibus-packer) |
 | CentOS 6           | ✅     | ✅     | Using unofficial 32bit image |
 | CentOS 7           | ✅     | ❌     | No official 32bit images |
