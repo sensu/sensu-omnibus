@@ -155,7 +155,7 @@ chown_sensu_dirs()
     set -e
     # Ensure all files/directories in $INSTALLER_DIR are owned by root.
     chown -Rh 0:0 $INSTALLER_DIR
-    chown -R $SENSU_USER:$SENSU_GROUP $CONFIG_DIR
+    find $CONFIG_DIR -path $CONFD_DIR -prune -o -type f -print | xargs chown $SENSU_USER:$SENSU_GROUP
     chown -R $SENSU_USER:$SENSU_GROUP $LOG_DIR
     chown -R $SENSU_USER:$SENSU_GROUP $PID_DIR
     chown -R $SENSU_USER:$SENSU_GROUP $TMP_DIR
